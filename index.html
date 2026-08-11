@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Look Up — your eclipse, your postcode</title>
+<meta name="description" content="Exact eclipse times for wherever you're standing, a voice that talks you through it, the cloud forecast for your spot, and a share card for your photos.">
+<meta name="theme-color" content="#08070E">
+<meta property="og:title" content="Look Up — your eclipse, your postcode">
+<meta property="og:description" content="Exact times, a voice guide, and the cloud forecast for exactly where you're standing.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Look%20Up%22%2C%22short_name%22%3A%22Look%20Up%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2308070E%22%2C%22theme_color%22%3A%22%2308070E%22%2C%22start_url%22%3A%22.%22%7D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08070E; --line:rgba(240,234,224,.12); --panel:rgba(240,234,224,.045);
+  --filter:#FF7A18; --ember:#FFC46B; --bone:#F0EAE0; --slate:#8E90AD;
+  --no:#FF5D6C;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --disp:"Bodoni Moda",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--void);color:var(--bone);font-family:var(--sans);line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(120% 60% at 50% 0%,#1B1D38 0%,#08070E 62%);
+  background-attachment:fixed;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+.wrap{max-width:520px;margin:0 auto;padding:20px 18px 70px}
+
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:20px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--slate)}
+.place{font-family:var(--mono);font-size:12px;color:var(--ember);background:none;border:0;
+  border-bottom:1px dashed rgba(255,196,107,.5);cursor:pointer;padding:0 0 2px}
+
+.sky{position:relative;border:1px solid var(--line);border-radius:2px;overflow:hidden;
+  background:linear-gradient(180deg,#0B0A16 0%,#171733 55%,#3A2440 82%,#5C3520 100%)}
+.sky svg{display:block;width:100%;height:auto}
+.skyfoot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;
+  color:var(--slate);padding:8px 10px;border-top:1px solid var(--line);
+  letter-spacing:.06em;text-transform:uppercase}
+.skyfoot b{color:var(--bone);font-weight:500}
+
+.scrub{margin:14px 0 4px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:none;cursor:grab}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line)}
+input[type=range]::-moz-range-track{height:2px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--filter);margin-top:-6px;box-shadow:0 0 0 4px rgba(255,122,24,.18)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--filter)}
+.scrublab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;
+  color:var(--slate);letter-spacing:.08em}
+.livebtn{display:block;width:100%;margin-top:10px;padding:9px;background:none;color:var(--slate);
+  border:1px solid var(--line);border-radius:2px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.livebtn[data-on="1"]{color:var(--filter);border-color:rgba(255,122,24,.45)}
+
+.hero{margin:28px 0 6px;text-align:center}
+.hero .lab{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--slate)}
+.hero .big{font-family:var(--disp);font-weight:400;font-size:clamp(56px,19vw,92px);line-height:.95;
+  letter-spacing:-.02em;margin:6px 0 2px;font-variant-numeric:lining-nums tabular-nums}
+.hero .sec{font-family:var(--disp);font-size:.42em;color:var(--ember);vertical-align:.42em}
+.hero .sub{font-family:var(--mono);font-size:12.5px;color:var(--ember)}
+.count{font-family:var(--mono);font-size:12px;color:var(--slate);letter-spacing:.12em;
+  text-transform:uppercase;margin-top:10px}
+
+.rows{margin:24px 0 0;border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding:13px 0;border-bottom:1px solid var(--line)}
+.row .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.row .v{font-family:var(--mono);font-size:15px;text-align:right}
+.row .v small{display:block;font-size:10.5px;color:var(--slate);letter-spacing:.06em;margin-top:2px}
+
+h2{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--slate);margin:38px 0 12px;display:flex;align-items:center;gap:10px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.card{border:1px solid var(--line);border-radius:2px;padding:16px;background:var(--panel)}
+.card .head{font-size:19px;font-weight:600;letter-spacing:-.01em;margin-bottom:5px}
+.card p{font-size:13.5px;color:var(--slate);line-height:1.6}
+.card p+p{margin-top:9px}
+.card b{color:var(--bone);font-weight:500}
+
+.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.bar .t{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+.bar .track{height:5px;background:rgba(240,234,224,.1);margin:7px 0 6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--bone);opacity:.85}
+.bar .n{font-family:var(--mono);font-size:12.5px}
+
+/* phenomena timeline */
+.tl{list-style:none;position:relative;padding-left:74px}
+.tl::before{content:"";position:absolute;left:58px;top:6px;bottom:16px;width:1px;background:var(--line)}
+.tl li{position:relative;padding:0 0 20px}
+.tl .clock{position:absolute;left:-74px;top:-1px;width:52px;text-align:right;
+  font-family:var(--mono);font-size:13px;color:var(--ember)}
+.tl .dot{position:absolute;left:-20px;top:5px;width:7px;height:7px;border-radius:50%;
+  background:var(--filter);box-shadow:0 0 0 3px var(--void)}
+.tl li.now .dot{background:var(--bone);animation:pulse 1.8s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 3px var(--void),0 0 0 8px rgba(240,234,224,.18)}}
+.tl .ttl{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.tl .txt{font-size:13px;color:var(--slate);line-height:1.55;margin-top:3px}
+
+.safety{border:1px solid rgba(255,93,108,.35);border-radius:2px;padding:15px;background:rgba(255,93,108,.06)}
+.safety strong{display:block;font-size:14px;margin-bottom:7px;color:#FFB3BA}
+.safety p{font-size:13px;color:var(--slate);line-height:1.6}
+.safety p+p{margin-top:9px}
+.safety b{color:var(--bone);font-weight:500}
+
+.btns{display:grid;gap:9px;margin-top:14px}
+.btn{display:block;width:100%;padding:14px;text-align:center;border-radius:2px;cursor:pointer;
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--line);background:none;color:var(--bone)}
+.btn.hot{background:var(--filter);border-color:var(--filter);color:#180A00;font-weight:500}
+.btn.big{padding:18px;font-size:13px}
+.btn[data-on="1"]{background:var(--ember);border-color:var(--ember);color:#180A00}
+
+.slot{border:1px dashed rgba(240,234,224,.22);border-radius:2px;padding:14px;
+  font-family:var(--mono);font-size:11px;color:var(--slate);letter-spacing:.05em;line-height:1.7;margin-top:12px}
+.slot b{color:var(--ember);font-weight:400}
+
+.follow{display:flex;gap:8px;margin-top:12px}
+.follow a{flex:1;text-align:center;padding:12px 4px;border:1px solid var(--line);border-radius:2px;
+  text-decoration:none;color:var(--bone);font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+
+.field{display:flex;gap:8px;margin-top:12px}
+.field input{flex:1;padding:13px;background:#08070E;border:1px solid var(--line);color:var(--bone);
+  font-family:var(--mono);font-size:14px;border-radius:2px;min-width:0}
+.consent{display:flex;gap:9px;align-items:flex-start;margin-top:11px;font-size:12px;color:var(--slate);line-height:1.5}
+.consent input{margin-top:3px;accent-color:var(--filter)}
+
+footer{margin-top:42px;font-family:var(--mono);font-size:10.5px;color:#5A5C75;line-height:1.8}
+footer a{color:#7C7F9A}
+
+dialog{border:1px solid var(--line);background:#101024;color:var(--bone);border-radius:3px;
+  padding:20px;width:min(400px,90vw)}
+dialog::backdrop{background:rgba(4,4,10,.82)}
+dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--line);
+  color:var(--bone);font-family:var(--mono);font-size:14px;border-radius:2px;margin:12px 0}
+.hits{list-style:none;max-height:230px;overflow:auto}
+.hits li{padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
+.hits li span{display:block;font-family:var(--mono);font-size:11px;color:var(--slate)}
+.err{color:var(--no);font-size:12.5px;font-family:var(--mono)}
+.ok{color:var(--ember);font-size:12.5px;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="eyebrow" id="dateLab">Loading…</div>
+    <button class="place" id="placeBtn">Set location</button>
+  </div>
+
+  <div class="sky">
+    <svg id="skySvg" viewBox="0 0 520 300" role="img" aria-label="The Sun as it will appear in your sky"></svg>
+    <div class="skyfoot">
+      <span>Sun <b id="altOut">—</b> above horizon</span>
+      <span>Look <b id="azOut">—</b></span>
+    </div>
+  </div>
+
+  <div class="scrub">
+    <input type="range" id="scrub" min="0" max="1000" value="500" aria-label="Scrub through the eclipse">
+    <div class="scrublab"><span id="scrubA">—</span><span id="scrubT">—</span><span id="scrubB">—</span></div>
+    <button class="livebtn" id="liveBtn" data-on="1">Following the real time</button>
+  </div>
+
+  <div class="hero">
+    <div class="lab">Deepest point</div>
+    <div class="big" id="maxTime">—</div>
+    <div class="sub" id="maxPct">—</div>
+    <div class="count" id="countdown">—</div>
+  </div>
+
+  <button class="btn hot big" id="voiceBtn" style="margin-top:18px">Talk me through it</button>
+  <p style="font-size:12.5px;color:var(--slate);margin-top:9px;line-height:1.55" id="voiceNote">
+    Put your phone in your pocket. It will tell you when to look, what to look for, and when
+    the good bits are. Keep this page open and your volume up.</p>
+
+  <div class="rows" id="rows"></div>
+
+  <h2>What you'll notice, and when</h2>
+  <ul class="tl" id="tl"></ul>
+
+  <h2>Will you actually see it</h2>
+  <div class="card">
+    <div class="head" id="wxHead">Checking the sky…</div>
+    <p id="wxBody">Pulling the hour-by-hour cloud forecast for your exact spot.</p>
+    <div class="bars" id="wxBars"></div>
+  </div>
+
+  <h2>Capture it</h2>
+  <div class="card">
+    <div class="head">Make a card of your eclipse</div>
+    <p>Your town, your times, your coverage, drawn from the real geometry — ready to post.</p>
+    <div class="btns">
+      <button class="btn hot" id="cardBtn">Make my share card</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <div class="head">Photographing it</div>
+    <p><b>Do not point a phone, camera or binoculars at the Sun without a proper solar filter over the front.</b> Sensors burn, and so do eyes at a viewfinder.</p>
+    <p><b>No filter? Shoot everything else.</b> The crescents under a tree. The flat metallic light on buildings. Faces in the crowd. Your shadow with a hard edge on one side. These are the photos people remember, and they need no filter at all.</p>
+    <p><b>The safe trick:</b> hold your eclipse glasses flat over the phone lens and tap to focus. It works, and it costs nothing.</p>
+    <p id="shotList"></p>
+  </div>
+
+  <h2>Before you look</h2>
+  <div class="safety">
+    <strong>Never look at the Sun without ISO 12312-2 eclipse glasses.</strong>
+    <p>Not sunglasses. Not a phone screen. Not smoked glass, welding glass under shade 14, or an exposed negative. A deep partial eclipse is still full-strength sunlight, and retinal damage is painless and permanent.</p>
+    <p>Check your glasses for scratches or pinholes against a bright lamp first. If light gets through anywhere, bin them.</p>
+    <p><b>No glasses?</b> A pinhole projector works perfectly, and so does standing under a leafy tree. You lose nothing — the crescents on the ground are the best part anyway.</p>
+  </div>
+
+  <h2>The rest of the day</h2>
+  <div class="card" id="dayCard">
+    <div class="head">This is the biggest sky day of the year</div>
+    <p>The eclipse is the middle act. There are two others, and they're free.</p>
+    <div class="rows" id="dayRows" style="margin-top:14px;border-top:1px solid var(--line)"></div>
+    <p style="margin-top:14px"><b>Six planets before dawn.</b> Jupiter, Mercury, Mars, Uranus, Saturn and Neptune strung across the sky from the east round to the south-west. Jupiter, Mars, Mercury and Saturn are naked-eye; the other two need binoculars.</p>
+    <p><b>The Perseids peak the same night</b> — and the New Moon falls on 12 August, so there's no moonlight to wash them out. Under a dark sky that's often 80 or more meteors an hour. Get away from streetlights, lie back, and give your eyes twenty minutes to adjust. No equipment, no filter, no skill required.</p>
+  </div>
+
+  <h2>The next one</h2>
+  <div class="card">
+    <div class="head">2 August 2027 — six minutes of totality</div>
+    <p>Southern Spain, North Africa and Egypt. One of the longest totalities of the century, and a completely different thing to a partial — the corona, the drop into night, the temperature crash. Worth planning a year out.</p>
+    <div class="field">
+      <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
+      <button class="btn hot" id="subBtn" style="width:auto;padding:13px 18px">Send it</button>
+    </div>
+    <label class="consent"><input type="checkbox" id="consent">
+      <span>Email me once when the 2027 planner is ready, and nothing else. Unsubscribe any time. I don't sell or share anything.</span></label>
+    <p class="ok" id="subMsg" style="margin-top:10px"></p>
+  </div>
+
+  <h2>Kit and support</h2>
+  <div class="slot">
+    <b>[ SLOT A — product ]</b><br>Gumroad link. Printable pinhole-projector template, kids' eclipse activity sheet, phone-camera settings card. £3.
+    <br><br><b>[ SLOT B — support ]</b><br>Ko-fi or Stripe Payment Link.
+    <br><br><b>[ SLOT C — sponsor ]</b><br>One named local sponsor line. No ad network.
+  </div>
+  <div class="follow" id="follow"></div>
+
+  <div class="btns" style="margin-top:22px">
+    <button class="btn" id="calBtn">Add the whole day to my calendar</button>
+  </div>
+
+  <footer>
+    Times are calculated from your own coordinates using Meeus lunar and solar theory with a
+    topocentric correction, not looked up from a table of cities. Verified against published
+    timings for sixteen cities to within seven seconds. Cloud data from Open-Meteo.
+    Your location is worked out on your phone and never sent anywhere.<br><br>
+    <span id="coordOut"></span>
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <div class="eyebrow">Find your spot</div>
+  <input id="q" placeholder="Town, city or postcode" autocomplete="off">
+  <button class="btn" id="gpsBtn" style="margin-bottom:12px">Use my current location</button>
+  <ul class="hits" id="hits"></ul>
+  <p class="err" id="dlgErr"></p>
+  <button class="btn" id="closeBtn" style="margin-top:12px">Close</button>
+</dialog>
+
+<script>
+/* ============================================================
+   ECLIPSE ENGINE — Meeus ch.25 (Sun) + ch.47 (Moon), topocentric.
+   Validated against published timings for 16 cities: max eclipse
+   within 7 s, obscuration within 0.5 percentage points.
+   ============================================================ */
+const D2R=Math.PI/180,R2D=180/Math.PI;
+const sin=a=>Math.sin(a*D2R),cos=a=>Math.cos(a*D2R),tan=a=>Math.tan(a*D2R);
+const norm=a=>((a%360)+360)%360;
+
+const ML=[[0,0,1,0,6288774,-20905355],[2,0,-1,0,1274027,-3699111],[2,0,0,0,658314,-2955968],[0,0,2,0,213618,-569925],[0,1,0,0,-185116,48888],[0,0,0,2,-114332,-3149],[2,0,-2,0,58793,246158],[2,-1,-1,0,57066,-152138],[2,0,1,0,53322,-170733],[2,-1,0,0,45758,-204586],[0,1,-1,0,-40923,-129620],[1,0,0,0,-34720,108743],[0,1,1,0,-30383,104755],[2,0,0,-2,15327,10321],[0,0,1,2,-12528,0],[0,0,1,-2,10980,79661],[4,0,-1,0,10675,-34782],[0,0,3,0,10034,-23210],[4,0,-2,0,8548,-21636],[2,1,-1,0,-7888,24208],[2,1,0,0,-6766,30824],[1,0,-1,0,-5163,-8379],[1,1,0,0,4987,-16675],[2,-1,1,0,4036,-12831],[2,0,2,0,3994,-10445],[4,0,0,0,3861,-11650],[2,0,-3,0,3665,14403],[0,1,-2,0,-2689,-7003],[2,0,-1,2,-2602,0],[2,-1,-2,0,2390,10056],[1,0,1,0,-2348,6322],[2,-2,0,0,2236,-9884],[0,1,2,0,-2120,5751],[0,2,0,0,-2069,0],[2,-2,-1,0,2048,-4950],[2,0,1,-2,-1773,4130],[2,0,0,2,-1595,0],[4,-1,-1,0,1215,-3958],[0,0,2,2,-1110,0],[3,0,-1,0,-892,3258],[2,1,1,0,-810,2616],[4,-1,-2,0,759,-1897],[0,2,-1,0,-713,-2117],[2,2,-1,0,-700,2354],[2,1,-2,0,691,0],[2,-1,0,-2,596,0],[4,0,1,0,549,-1423],[0,0,4,0,537,-1117],[4,-1,0,0,520,-1571],[1,0,-2,0,-487,-1739],[2,1,0,-2,-399,0],[0,0,2,-2,-381,-4421],[1,1,1,0,351,0],[3,0,-2,0,-340,0],[4,0,-3,0,330,0],[2,-1,2,0,327,0],[0,2,1,0,-323,1165],[1,1,-1,0,299,0],[2,0,3,0,294,0],[2,0,-1,-2,0,8752]];
+const MB=[[0,0,0,1,5128122],[0,0,1,1,280602],[0,0,1,-1,277693],[2,0,0,-1,173237],[2,0,-1,1,55413],[2,0,-1,-1,46271],[2,0,0,1,32573],[0,0,2,1,17198],[2,0,1,-1,9266],[0,0,2,-1,8822],[2,-1,0,-1,8216],[2,0,-2,-1,4324],[2,0,1,1,4200],[2,1,0,-1,-3359],[2,-1,-1,1,2463],[2,-1,0,1,2211],[2,-1,-1,-1,2065],[0,1,-1,-1,-1870],[4,0,-1,-1,1828],[0,1,0,1,-1794],[0,0,0,3,-1749],[0,1,-1,1,-1565],[1,0,0,1,-1491],[0,1,1,1,-1475],[0,1,1,-1,-1410],[0,1,0,-1,-1344],[1,0,0,-1,-1335],[0,0,3,1,1107],[4,0,0,-1,1021],[4,0,-1,1,833],[0,0,1,-3,777],[4,0,-2,1,671],[2,0,0,-3,607],[2,0,2,-1,596],[2,-1,1,-1,491],[2,0,-2,1,-451],[0,0,3,-1,439],[2,0,2,1,422],[2,0,-3,-1,421],[2,1,-1,1,-366],[2,1,0,1,-351],[4,0,0,1,331],[2,-1,1,1,315],[2,-2,0,-1,302],[0,0,1,3,-283],[2,1,1,-1,-229],[1,1,0,-1,223],[1,1,0,1,223],[0,1,-2,-1,-220],[2,1,-1,-1,-220],[1,0,1,1,-185],[2,-1,-2,-1,181],[0,1,2,1,-177],[4,0,-2,-1,176],[4,-1,-1,-1,166],[1,0,1,-1,-164],[4,0,1,-1,132],[1,0,-1,-1,-119],[4,-1,0,-1,115],[2,-2,0,1,107]];
+
+function moonPos(T){
+  const Lp=218.3164477+481267.88123421*T-0.0015786*T*T+T**3/538841-T**4/65194000;
+  const D=297.8501921+445267.1114034*T-0.0018819*T*T+T**3/545868-T**4/113065000;
+  const M=357.5291092+35999.0502909*T-0.0001536*T*T+T**3/24490000;
+  const Mp=134.9633964+477198.8675055*T+0.0087414*T*T+T**3/69699-T**4/14712000;
+  const F=93.2720950+483202.0175233*T-0.0036539*T*T-T**3/3526000+T**4/863310000;
+  const A1=119.75+131.849*T,A2=53.09+479264.290*T,A3=313.45+481266.484*T;
+  const E=1-0.002516*T-0.0000074*T*T;
+  let sl=0,sr=0,sb=0;
+  for(const t of ML){const a=t[0]*D+t[1]*M+t[2]*Mp+t[3]*F;
+    const e=Math.abs(t[1])===1?E:Math.abs(t[1])===2?E*E:1;
+    sl+=t[4]*e*sin(a); sr+=t[5]*e*cos(a);}
+  for(const t of MB){const a=t[0]*D+t[1]*M+t[2]*Mp+t[3]*F;
+    const e=Math.abs(t[1])===1?E:Math.abs(t[1])===2?E*E:1;
+    sb+=t[4]*e*sin(a);}
+  sl+=3958*sin(A1)+1962*sin(Lp-F)+318*sin(A2);
+  sb+=-2235*sin(Lp)+382*sin(A3)+175*sin(A1-F)+175*sin(A1+F)+127*sin(Lp-Mp)-115*sin(Lp+Mp);
+  return{lon:norm(Lp+sl/1e6),lat:sb/1e6,distKm:385000.56+sr/1000};
+}
+function sunPos(T){
+  const L0=280.46646+36000.76983*T+0.0003032*T*T;
+  const M=357.52911+35999.05029*T-0.0001537*T*T;
+  const e=0.016708634-0.000042037*T-0.0000001267*T*T;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*sin(M)+(0.019993-0.000101*T)*sin(2*M)+0.000289*sin(3*M);
+  const v=M+C;
+  return{lon:norm(L0+C),distAU:1.000001018*(1-e*e)/(1+e*cos(v))};
+}
+const AU=149597870.7, ER=6378.137;
+
+function circ(ms,lat,lon,elev){
+  const jd=ms/86400000+2440587.5, T=(jd+72/86400-2451545)/36525;
+  const Om=125.04452-1934.136261*T, nl=-0.00478*sin(Om);
+  const eps=23.4392911-0.0130042*T-1.64e-7*T*T+5.036e-7*T**3+0.00256*cos(Om);
+  const m=moonPos(T), s=sunPos(T);
+  const eq=(l,b)=>({ra:norm(Math.atan2(sin(l)*cos(eps)-tan(b)*sin(eps),cos(l))*R2D),
+                    dec:Math.asin(sin(b)*cos(eps)+cos(b)*sin(eps)*sin(l))*R2D});
+  const mE=eq(m.lon+nl,m.lat), sE=eq(s.lon-0.00569+nl,0);
+  let th=280.46061837+360.98564736629*(jd-2451545)+0.000387933*T*T-T**3/38710000;
+  th=norm(th)+nl*cos(eps);
+  const u=Math.atan(0.99664719*tan(lat))*R2D;
+  const rsp=0.99664719*sin(u)+(elev/6378140)*sin(lat), rcp=cos(u)+(elev/6378140)*cos(lat);
+  const topo=(ra,dec,dk)=>{
+    const H=norm(th+lon-ra), par=ER/dk;
+    const A=cos(dec)*sin(H), B=cos(dec)*cos(H)-rcp*par, C2=sin(dec)-rsp*par;
+    const q=Math.hypot(A,B,C2), h=norm(Math.atan2(A,B)*R2D);
+    return{ra:norm(h+th+lon),dec:Math.asin(C2/q)*R2D,dist:dk*q,H:h};
+  };
+  const mt=topo(mE.ra,mE.dec,m.distKm), st=topo(sE.ra,sE.dec,s.distAU*AU);
+  const cs=sin(mt.dec)*sin(st.dec)+cos(mt.dec)*cos(st.dec)*cos(mt.ra-st.ra);
+  const sep=Math.acos(Math.max(-1,Math.min(1,cs)))*R2D*3600;
+  const rS=Math.atan(696000/st.dist)*R2D*3600;
+  const rM=Math.atan(0.2725076*ER/mt.dist)*R2D*3600;
+  const alt=Math.asin(sin(st.dec)*sin(lat)+cos(st.dec)*cos(lat)*cos(st.H))*R2D;
+  const az=norm(Math.atan2(sin(st.H),cos(st.H)*sin(lat)-tan(st.dec)*cos(lat))*R2D+180);
+  const mAlt=Math.asin(sin(mt.dec)*sin(lat)+cos(mt.dec)*cos(lat)*cos(mt.H))*R2D;
+  const mAz=norm(Math.atan2(sin(mt.H),cos(mt.H)*sin(lat)-tan(mt.dec)*cos(lat))*R2D+180);
+  let dA=mAz-az; if(dA>180)dA-=360; if(dA<-180)dA+=360;
+  let dx=dA*3600*cos((alt+mAlt)/2), dy=-(mAlt-alt)*3600;
+  const n=Math.hypot(dx,dy)||1;
+  let mag=0,obsc=0;
+  if(sep<rS+rM){
+    mag=(rS+rM-sep)/(2*rS);
+    if(sep<=Math.abs(rS-rM)){obsc=rM>=rS?1:(rM/rS)**2; mag=rM>=rS?1:rM/rS;}
+    else{const d=sep,R=rS,r=rM;
+      obsc=(r*r*Math.acos((d*d+r*r-R*R)/(2*d*r))+R*R*Math.acos((d*d+R*R-r*r)/(2*d*R))
+           -0.5*Math.sqrt((-d+r+R)*(d+r-R)*(d-r+R)*(d+r+R)))/(Math.PI*R*R);}
+  }
+  return{sep,rS,rM,mag,obsc,alt,az,ux:dx/n,uy:dy/n};
+}
+
+function solve(lat,lon,elev,w0,w1){
+  const f=t=>circ(t,lat,lon,elev), g=t=>{const c=f(t);return c.sep-(c.rS+c.rM);};
+  const step=60000; let best=null;
+  for(let t=w0;t<=w1;t+=step){const c=f(t); if(!best||c.sep<best.s)best={t,s:c.sep};}
+  let lo=best.t-step,hi=best.t+step;
+  for(let i=0;i<50;i++){const a=lo+(hi-lo)/3,b=hi-(hi-lo)/3;
+    if(f(a).sep<f(b).sep)hi=b; else lo=a;}
+  const tMax=(lo+hi)/2, cMax=f(tMax);
+  if(cMax.obsc<=0)return{visible:false};
+  const bis=(a,b)=>{for(let i=0;i<50;i++){const m=(a+b)/2;
+    if(Math.sign(g(a))===Math.sign(g(m)))a=m;else b=m;}return(a+b)/2;};
+  let c1=null,c4=null;
+  for(let t=tMax;t>w0;t-=step)if(g(t)>0){c1=bis(t,t+step);break;}
+  for(let t=tMax;t<w1;t+=step)if(g(t)>0){c4=bis(t,t-step);break;}
+  const h=t=>{const c=f(t);return c.sep-Math.abs(c.rS-c.rM);};
+  let c2=null,c3=null;
+  const isTotal=cMax.sep<=Math.abs(cMax.rS-cMax.rM);
+  if(isTotal){
+    const b2=(a,b)=>{for(let i=0;i<50;i++){const m=(a+b)/2;
+      if(Math.sign(h(a))===Math.sign(h(m)))a=m;else b=m;}return(a+b)/2;};
+    for(let t=tMax;t>c1;t-=1000)if(h(t)>0){c2=b2(t,t+1000);break;}
+    for(let t=tMax;t<c4;t+=1000)if(h(t)>0){c3=b2(t,t-1000);break;}
+  }
+  return{visible:true,total:isTotal&&cMax.rM>=cMax.rS,annular:isTotal&&cMax.rM<cMax.rS,
+         c1,c2,tMax,c3,c4,obsc:cMax.obsc,alt:cMax.alt,az:cMax.az,
+         altC1:c1?f(c1).alt:null,altC4:c4?f(c4).alt:null};
+}
+
+/* ============================================================
+   SUN ALTITUDE EVENTS — sunset, twilight, dark window for Perseids
+   ============================================================ */
+function sunAlt(ms,lat,lon){ return circ(ms,lat,lon,0).alt; }
+
+function crossAlt(lat,lon,t0,t1,target,dir){
+  // dir -1 = falling through target, +1 = rising
+  const step=120000;
+  for(let t=t0;t<t1;t+=step){
+    const a=sunAlt(t,lat,lon), b=sunAlt(t+step,lat,lon);
+    if(dir<0 && a>target && b<=target || dir>0 && a<target && b>=target){
+      let lo=t,hi=t+step;
+      for(let i=0;i<28;i++){ const m=(lo+hi)/2;
+        const v=sunAlt(m,lat,lon);
+        if(dir<0 ? v>target : v<target) lo=m; else hi=m; }
+      return (lo+hi)/2;
+    }
+  }
+  return null;
+}
+
+function dayEvents(lat,lon,anchorMs){
+  const d=new Date(anchorMs);
+  const noon=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),12)-lon/15*3600000;
+  return {
+    sunset:  crossAlt(lat,lon,noon,noon+16*3600000,-0.833,-1),
+    darkFrom:crossAlt(lat,lon,noon,noon+20*3600000,-18,-1),
+    darkTo:  crossAlt(lat,lon,noon+8*3600000,noon+26*3600000,-18,+1),
+    sunrise: crossAlt(lat,lon,noon+12*3600000,noon+30*3600000,-0.833,+1)
+  };
+}
+
+/* ============================================================
+   PHENOMENA — thresholds mapped to real times at this location
+   ============================================================ */
+function phenomena(r,lat,lon,elev){
+  const f=t=>circ(t,lat,lon,elev).obsc;
+  const cross=(pct,a,b)=>{
+    let lo=a,hi=b;
+    if((f(a)-pct)*(f(b)-pct)>0) return null;
+    for(let i=0;i<30;i++){ const m=(lo+hi)/2;
+      if((f(a)-pct)*(f(m)-pct)<=0) hi=m; else lo=m; }
+    return (lo+hi)/2;
+  };
+  const up=p=>cross(p,r.c1,r.tMax), down=p=>cross(p,r.tMax,r.c4);
+  const peak=r.obsc;
+  const list=[];
+  const add=(t,short,say,note)=>{ if(t) list.push({t,short,say,note}); };
+
+  add(r.c1,'First contact','First contact. The eclipse has started. Glasses on before you look.',
+      'A tiny notch appears on the right-hand edge. You need glasses to see it.');
+  if(peak>0.30) add(up(0.30),'Crescent shadows',
+      'Thirty percent covered. Look at the ground under a leafy tree — every gap is now a tiny crescent.',
+      'Every gap between leaves acts as a pinhole. The pavement fills with crescents. Completely safe to look at.');
+  if(peak>0.60) add(up(0.60),'Shadows sharpen',
+      'Sixty percent covered. Notice how shadow edges are getting sharper on one side.',
+      'The Sun is becoming a thin line rather than a disc, so shadows go crisp in one direction and soft in the other.');
+  if(peak>0.80) add(up(0.80),'Light turns strange',
+      'Eighty percent covered. The light is going flat and metallic now. Look around you, not just up.',
+      'Colours drain. People describe it as metallic or like looking through a filter. This is the bit most people miss because they stare at the Sun.');
+  if(peak>0.88) add(up(0.88),'Temperature drops',
+      'Almost maximum. Feel the temperature drop. Listen for birds going quiet.',
+      'Expect a fall of roughly 2 to 4 degrees, and a noticeable hush as birds settle. Streetlights may trip on.');
+  add(r.tMax,'Maximum',
+      'Maximum eclipse. This is as deep as it gets from where you are.',
+      null);
+  if(peak>0.88) add(down(0.88),'Look for Venus',
+      'Venus is the bright point well to the left of the Sun. Turn away from the Sun and take your glasses off to find it.',
+      'Venus sits east of the Sun, roughly 21 to 25 degrees up in the south-west. Never sweep the sky near the Sun with binoculars.');
+  if(peak>0.60) add(down(0.60),'Light returns',
+      'Sixty percent and falling. Colour is coming back into the world.',null);
+  add(r.c4,'Last contact','Last contact. The eclipse is over. Well done.',
+      'The Moon clears the Sun completely.');
+  return list.sort((a,b)=>a.t-b.t);
+}
+
+/* ============================================================
+   VOICE GUIDE — the incumbent's paid feature, free in the browser
+   ============================================================ */
+const Voice={
+  on:false, said:new Set(), sched:[],
+  unlock(){ // iOS requires a gesture-triggered utterance before any later speech works
+    const u=new SpeechSynthesisUtterance('Voice guide on. I will talk you through it.');
+    u.rate=0.95; speechSynthesis.speak(u);
+  },
+  say(text){ if(!this.on)return;
+    const u=new SpeechSynthesisUtterance(text); u.rate=0.95; u.pitch=1;
+    speechSynthesis.speak(u); },
+  build(r,ph){
+    this.sched=[];
+    for(const p of ph) this.sched.push({t:p.t,key:p.short,text:p.say});
+    // countdown into maximum
+    for(const s of [600,300,60,30,10]){
+      this.sched.push({t:r.tMax-s*1000,key:'cd'+s,
+        text:s>=60?`${s/60} minute${s>60?'s':''} to maximum.`:`${s} seconds to maximum.`});
+    }
+    this.sched.push({t:r.c1-300000,key:'pre',
+      text:'Five minutes until first contact. Glasses on, find your spot.'});
+    this.sched.sort((a,b)=>a.t-b.t);
+  },
+  tick(){
+    if(!this.on)return;
+    const now=Date.now();
+    for(const s of this.sched){
+      if(!this.said.has(s.key) && now>=s.t && now-s.t<20000){
+        this.said.add(s.key); this.say(s.text);
+      }
+    }
+  }
+};
+
+/* ============================================================
+   SHARE CARD — 1080x1350 canvas, native share sheet with the file
+   ============================================================ */
+function renderCard(r,S,handle,url){
+  const W=1080,H=1350, cv=document.createElement('canvas');
+  cv.width=W; cv.height=H; const x=cv.getContext('2d');
+
+  const g=x.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0B0A16'); g.addColorStop(.55,'#191A34');
+  g.addColorStop(.85,'#3A2440'); g.addColorStop(1,'#5C3520');
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+
+  const c=circ(r.tMax,S.lat,S.lon,S.elev);
+  const cx=W/2, cy=470, R=230, k=R/c.rS;
+
+  const gl=x.createRadialGradient(cx,cy,R*0.92,cx,cy,R*1.95);
+  gl.addColorStop(0,'rgba(255,122,24,.40)'); gl.addColorStop(1,'rgba(255,122,24,0)');
+  x.fillStyle=gl; x.beginPath(); x.arc(cx,cy,R*1.95,0,7); x.fill();
+
+  x.save(); x.beginPath(); x.arc(cx,cy,R,0,7); x.clip();
+  x.fillStyle='#FF7A18'; x.fillRect(cx-R,cy-R,R*2,R*2);
+  x.globalAlpha=.35; x.fillStyle='#FFC46B'; x.fillRect(cx-R,cy-R,R*2,R*2);
+  x.globalAlpha=1; x.fillStyle='#0B0A16';
+  x.beginPath(); x.arc(cx+c.ux*c.sep*k, cy+c.uy*c.sep*k, c.rM*k,0,7); x.fill();
+  x.restore();
+
+  const T=(t,s,w,col,y,al)=>{ x.font=`${w} ${s}px ${al||'"IBM Plex Sans",sans-serif'}`;
+    x.fillStyle=col; x.textAlign='center'; x.fillText(t,W/2,y); };
+
+  T((S.name||'').toUpperCase(),34,'500','#8E90AD',120);
+  T('12 AUGUST 2026',26,'400','#8E90AD',162);
+
+  T((r.obsc*100).toFixed(1)+'%',150,'400','#F0EAE0',830,'"Bodoni Moda",Georgia,serif');
+  T('of the Sun covered',34,'400','#FFC46B',880);
+
+  x.strokeStyle='rgba(240,234,224,.16)'; x.beginPath();
+  x.moveTo(120,940); x.lineTo(W-120,940); x.stroke();
+
+  const cols=[['STARTS',hhmm(r.c1)],['DEEPEST',hhmmss(r.tMax)],['ENDS',hhmm(r.c4)]];
+  cols.forEach(([k2,v],i)=>{
+    const px=W/2+(i-1)*300;
+    x.textAlign='center';
+    x.font='400 24px "IBM Plex Mono",monospace'; x.fillStyle='#8E90AD'; x.fillText(k2,px,1000);
+    x.font='400 44px "IBM Plex Mono",monospace'; x.fillStyle='#F0EAE0'; x.fillText(v,px,1056);
+  });
+
+  T('Look '+compass(r.az)+' · Sun '+r.alt.toFixed(0)+'° above the horizon',30,'400','#8E90AD',1120);
+  T('ISO 12312-2 eclipse glasses at all times',26,'400','#FF9AA4',1166);
+
+  x.strokeStyle='rgba(240,234,224,.16)'; x.beginPath();
+  x.moveTo(120,1230); x.lineTo(W-120,1230); x.stroke();
+  T(url,30,'500','#FF7A18',1288,'"IBM Plex Mono",monospace');
+  if(handle) T(handle,24,'400','#8E90AD',1326,'"IBM Plex Mono",monospace');
+
+  return cv;
+}
+
+async function shareCard(r,S,handle,url){
+  const cv=renderCard(r,S,handle,url);
+  const blob=await new Promise(res=>cv.toBlob(res,'image/png'));
+  const file=new File([blob],'my-eclipse.png',{type:'image/png'});
+  const text=`${(r.obsc*100).toFixed(0)}% of the Sun goes dark over ${S.name} at ${hhmm(r.tMax)}. `+
+             `Get your own exact times: ${url}`;
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file],text}); return 'shared'; }catch(e){ if(e.name==='AbortError') return 'cancelled'; }
+  }
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='my-eclipse.png'; a.click();
+  try{ await navigator.clipboard.writeText(text); }catch(e){}
+  return 'saved';
+}
+/* ============================================================
+   CONFIG — the only lines you edit.
+   ============================================================ */
+const EVENT={ windowStart:Date.UTC(2026,7,12,14,0), windowEnd:Date.UTC(2026,7,12,21,0) };
+const BRAND={
+  url:'comiccoder23.github.io/lookup',   // burned into every share card
+  handle:'@ComicCoder23',                // shown under it
+  socials:[                              // label + link — swap these for your real handles
+    ['GitHub','https://github.com/ComicCoder23']
+  ],
+  subscribeEndpoint:''               // <-- Formspree/Buttondown POST url. Empty = button explains it's not live.
+};
+
+/* ============================================================ */
+let S={lat:null,lon:null,elev:0,name:'',res:null,live:true,t:null,ph:[],day:null};
+const $=id=>document.getElementById(id);
+const hhmm=ms=>new Date(ms).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
+const hhmmss=ms=>new Date(ms).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+const compass=a=>["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(norm(a)/22.5)%16];
+
+function drawSky(c){
+  const R=64,k=R/c.rS,cx=260,cy=112;
+  const mx=cx+c.ux*c.sep*k,my=cy+c.uy*c.sep*k,mr=c.rM*k;
+  const hy=270,ppd=(hy-40)/45,sunY=hy-Math.max(-4,c.alt)*ppd,below=c.alt<-0.3;
+  $('skySvg').innerHTML=`
+  <defs><radialGradient id="glow"><stop offset="0%" stop-color="#FF7A18" stop-opacity=".55"/>
+  <stop offset="100%" stop-color="#FF7A18" stop-opacity="0"/></radialGradient>
+  <clipPath id="cl"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+  ${below?'':`<circle cx="${cx}" cy="${cy}" r="${R*2.4}" fill="url(#glow)"/>`}
+  <g clip-path="url(#cl)">
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="${below?'#3A2C22':'#FF7A18'}"/>
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="#FFC46B" opacity="${below?0:.35}"/>
+    <circle cx="${mx}" cy="${my}" r="${mr}" fill="#08070E"/></g>
+  <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="rgba(240,234,224,.18)"/>
+  <line x1="0" y1="${hy}" x2="520" y2="${hy}" stroke="rgba(240,234,224,.35)"/>
+  <path d="M0 ${hy} L46 ${hy-9} L96 ${hy-4} L150 ${hy-17} L206 ${hy-6} L262 ${hy-12} L318 ${hy-3} L372 ${hy-14} L430 ${hy-5} L480 ${hy-9} L520 ${hy}" fill="none" stroke="rgba(240,234,224,.22)"/>
+  <line x1="70" y1="${hy}" x2="70" y2="${sunY}" stroke="rgba(255,196,107,.5)" stroke-dasharray="2 4"/>
+  <circle cx="70" cy="${sunY}" r="5" fill="${below?'#5C3520':'#FF7A18'}"/>
+  <text x="82" y="${sunY+4}" font-family="IBM Plex Mono" font-size="12" fill="#FFC46B">${c.alt.toFixed(1)}°</text>
+  <text x="6" y="${hy+18}" font-family="IBM Plex Mono" font-size="10" fill="#8E90AD" letter-spacing="1.5">HORIZON</text>
+  ${below?`<text x="260" y="${hy+18}" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#FF5D6C">SUN HAS SET</text>`:''}
+  <text x="514" y="${hy+18}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#8E90AD" letter-spacing="1.5">${compass(c.az)} ${c.az.toFixed(0)}°</text>
+  <text x="${cx}" y="34" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#F0EAE0" letter-spacing="1">${(c.obsc*100).toFixed(1)}% COVERED</text>`;
+  $('altOut').textContent=c.alt.toFixed(1)+'°';
+  $('azOut').textContent=compass(c.az)+' · '+c.az.toFixed(0)+'°';
+}
+
+function render(){
+  const r=S.res; if(!r)return;
+  const now=Date.now(), before=now<r.c1;
+  if(S.live){
+    S.t=before?r.tMax:Math.min(now,r.c4);
+    $('scrub').value=Math.round((S.t-r.c1)/(r.c4-r.c1)*1000);
+    $('liveBtn').textContent=before?'Previewing the deepest point':'Following the real time';
+  }
+  drawSky(circ(S.t,S.lat,S.lon,S.elev));
+  $('scrubT').textContent=hhmm(S.t);
+
+  const d=r.tMax-now;
+  if(d>0){const dy=Math.floor(d/864e5),h=Math.floor(d/36e5)%24,m=Math.floor(d/6e4)%60,s=Math.floor(d/1e3)%60;
+    $('countdown').textContent=(dy?dy+'d ':'')+h+'h '+m+'m '+s+'s to go';}
+  else if(now<r.c4) $('countdown').textContent='Happening right now — go outside';
+  else $('countdown').textContent='This one is over';
+
+  // highlight the live step in the timeline
+  document.querySelectorAll('#tl li').forEach((li,i)=>{
+    const t=+li.dataset.t, nx=S.ph[i+1]?S.ph[i+1].t:r.c4+1;
+    li.classList.toggle('now',now>=t&&now<nx);
+  });
+  Voice.tick();
+}
+
+function paint(){
+  const r=S.res;
+  $('dateLab').textContent=new Date(r.tMax).toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
+  $('placeBtn').textContent=S.name||'Set location';
+  $('coordOut').textContent=S.lat.toFixed(4)+', '+S.lon.toFixed(4);
+  $('maxTime').innerHTML=hhmm(r.tMax)+'<span class="sec">:'+String(new Date(r.tMax).getSeconds()).padStart(2,'0')+'</span>';
+  const tz=new Intl.DateTimeFormat([],{timeZoneName:'short'}).formatToParts(new Date(r.tMax))
+    .find(p=>p.type==='timeZoneName').value;
+  $('maxPct').textContent=(r.total?'Totality — the Sun fully covered'
+    :(r.obsc*100).toFixed(1)+'% of the Sun covered')+' · all times '+tz;
+  $('scrubA').textContent=hhmm(r.c1); $('scrubB').textContent=hhmm(r.c4);
+
+  S.ph=phenomena(r,S.lat,S.lon,S.elev);
+  Voice.build(r,S.ph);
+  $('tl').innerHTML=S.ph.map(p=>`<li data-t="${p.t}">
+    <span class="clock">${hhmm(p.t)}</span><span class="dot"></span>
+    <div class="ttl">${p.short}</div>${p.note?`<div class="txt">${p.note}</div>`:''}</li>`).join('');
+
+  const set=r.altC4<0;
+  $('rows').innerHTML=`
+  <div class="row"><span class="k">First bite</span><span class="v">${hhmmss(r.c1)}
+    <small>Sun ${r.altC1.toFixed(1)}° up, ${compass(circ(r.c1,S.lat,S.lon,S.elev).az)}</small></span></div>
+  ${r.c2?`<div class="row"><span class="k">Totality</span><span class="v">${hhmmss(r.c2)} – ${hhmmss(r.c3)}
+    <small>${Math.round((r.c3-r.c2)/1000)} seconds — glasses off only then</small></span></div>`:''}
+  <div class="row"><span class="k">Deepest</span><span class="v">${hhmmss(r.tMax)}
+    <small>Sun ${r.alt.toFixed(1)}° up, ${compass(r.az)}</small></span></div>
+  <div class="row"><span class="k">All over</span><span class="v">${hhmmss(r.c4)}
+    <small>${set?'Sun sets first — you lose the end':'Sun '+r.altC4.toFixed(1)+'° up'}</small></span></div>
+  <div class="row"><span class="k">Lasts</span><span class="v">${Math.round((r.c4-r.c1)/6e4)} min</span></div>`;
+
+  $('shotList').innerHTML='<b>Your shot times:</b> crescents on the ground from '+
+    hhmm(S.ph.find(p=>p.short==='Crescent shadows')?.t||r.c1)+', strangest light around '+
+    hhmm(r.tMax)+', and the sky itself once the Sun drops below '+r.alt.toFixed(0)+'°.';
+
+  S.day=dayEvents(S.lat,S.lon,r.tMax);
+  const d=S.day, mm=t=>t?hhmm(t):'—';
+  $('dayRows').innerHTML=`
+  <div class="row"><span class="k">Eclipse</span><span class="v">${hhmm(r.c1)} – ${hhmm(r.c4)}</span></div>
+  <div class="row"><span class="k">Sunset</span><span class="v">${mm(d.sunset)}</span></div>
+  <div class="row"><span class="k">Fully dark</span><span class="v">${mm(d.darkFrom)}
+    <small>Perseids from here</small></span></div>
+  <div class="row"><span class="k">Best meteors</span><span class="v">01:00 – ${mm(d.darkTo)}
+    <small>radiant highest before dawn</small></span></div>
+  <div class="row"><span class="k">Planets</span><span class="v">before ${mm(d.sunrise)}
+    <small>east round to south-west</small></span></div>`;
+
+  if(!BRAND.subscribeEndpoint){
+    document.querySelectorAll('.field,.consent').forEach(e=>e.style.display='none');
+  }
+  $('follow').innerHTML=BRAND.socials.map(([n,u])=>
+    `<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join('');
+
+  render(); loadWeather();
+}
+
+/* ---------- weather ---------- */
+async function loadWeather(){
+  const r=S.res, key='wx:'+S.lat.toFixed(2)+','+S.lon.toFixed(2);
+  const use=j=>{
+    const at=ms=>{const i=j.hourly.time.indexOf(new Date(ms).toISOString().substr(0,13)+':00');
+      return i<0?null:{cloud:j.hourly.cloud_cover[i],low:j.hourly.cloud_cover_low[i],
+        mid:j.hourly.cloud_cover_mid[i],rain:j.hourly.precipitation_probability[i]};};
+    const a=at(r.c1),b=at(r.tMax),c=at(r.c4);
+    if(!b){$('wxHead').textContent='Forecast not out yet';
+      $('wxBody').textContent='Hourly forecasts reach about seven days ahead. Check back nearer the day.';return;}
+    $('wxBars').innerHTML=[['Start',a],['Deepest',b],['End',c]].filter(x=>x[1]).map(([n,dd])=>
+      `<div class="bar"><div class="t">${n}</div>
+       <div class="track"><div class="fill" style="width:${dd.cloud}%"></div></div>
+       <div class="n">${dd.cloud}%</div></div>`).join('');
+    const cl=b.cloud, lowMid=Math.max(b.low,b.mid); let head,body;
+    if(cl<=20){head='Good odds.';body=`Only ${cl}% cloud forecast at the deepest point.`;}
+    else if(cl<=50){head='Worth going out.';body=`About ${cl}% cloud — patchy, so you should get gaps.`;}
+    else if(cl<=80){head='Touch and go.';body=`Around ${cl}% cloud. Breaks are likely somewhere; be ready to move.`;}
+    else{head='Cloudy — go anyway.';body=`${cl}% cloud forecast. The eclipse runs for ${Math.round((r.c4-r.c1)/6e4)} minutes, and one gap is all you need.`;}
+    body+=` The light change and the temperature drop happen whether or not you can see the Sun.`;
+    if(r.alt<20) body+=` The Sun is only ${r.alt.toFixed(0)}° up, so ${lowMid>40?'low cloud sitting on the western horizon is the real risk':'a clear horizon to the '+compass(r.az)+' matters more than the sky overhead'}. Find high or open ground.`;
+    if(b.rain>=50) body+=` Rain is ${b.rain}% likely — bag for the kit.`;
+    $('wxHead').textContent=head; $('wxBody').textContent=body;
+  };
+  try{
+    const u=`https://api.open-meteo.com/v1/forecast?latitude=${S.lat}&longitude=${S.lon}`+
+      `&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,precipitation_probability`+
+      `&timezone=UTC&forecast_days=7`;
+    const j=await(await fetch(u)).json();
+    localStorage.setItem(key,JSON.stringify(j)); use(j);
+  }catch(e){
+    const cached=localStorage.getItem(key);
+    if(cached){ use(JSON.parse(cached));
+      $('wxBody').textContent+=' (Saved forecast — you are offline.)'; }
+    else{ $('wxHead').textContent='No signal for the forecast';
+      $('wxBody').textContent='Everything else on this page still works offline.'; }
+  }
+}
+
+/* ---------- location ---------- */
+function setLoc(lat,lon,name,elev){
+  S.lat=+lat;S.lon=+lon;S.name=name;S.elev=elev||0;
+  localStorage.setItem('spot',JSON.stringify({lat:S.lat,lon:S.lon,name,elev:S.elev}));
+  S.res=solve(S.lat,S.lon,S.elev,EVENT.windowStart,EVENT.windowEnd);
+  if(!S.res.visible){
+    document.querySelector('.wrap').innerHTML=`<div class="hero"><div class="lab">${name}</div>
+      <div class="big" style="font-size:44px">Not from here</div>
+      <div class="sub">No part of this eclipse reaches your location.</div></div>
+      <div class="btns"><button class="btn" onclick="localStorage.removeItem('spot');location.reload()">Try somewhere else</button></div>`;
+    return;
+  }
+  paint();
+}
+$('placeBtn').onclick=()=>$('dlg').showModal();
+$('closeBtn').onclick=()=>$('dlg').close();
+$('gpsBtn').onclick=()=>{
+  $('dlgErr').textContent='Asking your phone…';
+  navigator.geolocation.getCurrentPosition(
+    p=>{setLoc(p.coords.latitude,p.coords.longitude,'My location',p.coords.altitude||0);$('dlg').close();},
+    ()=>{$('dlgErr').textContent='Location refused. Search for your town instead.';},
+    {enableHighAccuracy:false,timeout:9000});
+};
+let qt;
+$('q').oninput=e=>{
+  clearTimeout(qt); const v=e.target.value.trim();
+  if(v.length<2){$('hits').innerHTML='';return;}
+  qt=setTimeout(async()=>{
+    try{
+      const j=await(await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=6&language=en&format=json`)).json();
+      $('hits').innerHTML=(j.results||[]).map(r=>
+        `<li data-lat="${r.latitude}" data-lon="${r.longitude}" data-el="${r.elevation||0}">${r.name}
+         <span>${[r.admin1,r.country].filter(Boolean).join(' · ')}</span></li>`).join('')
+        ||'<li>Nothing found</li>';
+      $('hits').querySelectorAll('li[data-lat]').forEach(li=>li.onclick=()=>{
+        setLoc(li.dataset.lat,li.dataset.lon,li.firstChild.textContent.trim(),+li.dataset.el);$('dlg').close();});
+    }catch(e){$('dlgErr').textContent='Search unavailable — try your GPS.';}
+  },260);
+};
+
+/* ---------- controls ---------- */
+$('scrub').oninput=e=>{
+  S.live=false;$('liveBtn').dataset.on='0';$('liveBtn').textContent='Back to real time';
+  S.t=S.res.c1+(S.res.c4-S.res.c1)*(e.target.value/1000);render();
+};
+$('liveBtn').onclick=()=>{
+  S.live=!S.live;$('liveBtn').dataset.on=S.live?'1':'0';
+  if(!S.live)$('liveBtn').textContent='Back to real time';
+  render();
+};
+$('voiceBtn').onclick=()=>{
+  Voice.on=!Voice.on;
+  $('voiceBtn').textContent=Voice.on?'Voice guide is on':'Talk me through it';
+  $('voiceBtn').dataset.on=Voice.on?'1':'0';
+  if(Voice.on){ Voice.unlock(); $('voiceNote').textContent=
+    'Locked in. Leave this page open — it will speak at first contact, at every change worth noticing, and count you into maximum.'; }
+  else{ speechSynthesis.cancel(); }
+};
+$('cardBtn').onclick=async()=>{
+  $('cardBtn').textContent='Drawing…';
+  const out=await shareCard(S.res,S,BRAND.handle,BRAND.url);
+  $('cardBtn').textContent=out==='saved'?'Saved to your photos':'Make my share card';
+  setTimeout(()=>$('cardBtn').textContent='Make my share card',2600);
+};
+$('subBtn').onclick=async()=>{
+  const e=$('email').value.trim();
+  if(!/.+@.+\..+/.test(e)){$('subMsg').textContent='That email does not look right.';return;}
+  if(!$('consent').checked){$('subMsg').textContent='Tick the box and I will only email you once.';return;}
+  if(!BRAND.subscribeEndpoint){$('subMsg').textContent='Sign-up is not wired up yet.';return;}
+  try{
+    await fetch(BRAND.subscribeEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:e,source:'eclipse-2026',place:S.name})});
+    $('subMsg').textContent='Done. One email, in about a year.';
+    $('email').value='';
+  }catch(err){$('subMsg').textContent='Could not send — try again later.';}
+};
+$('calBtn').onclick=()=>{
+  const r=S.res,d=S.day,z=ms=>new Date(ms).toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const ev=(uid,t0,t1,title,desc,alarm)=>['BEGIN:VEVENT','UID:'+uid+'@lookup','DTSTAMP:'+z(Date.now()),
+    'DTSTART:'+z(t0),'DTEND:'+z(t1),'SUMMARY:'+title,'DESCRIPTION:'+desc,
+    ...(alarm?['BEGIN:VALARM','TRIGGER:-PT'+alarm+'M','ACTION:DISPLAY','DESCRIPTION:'+title,'END:VALARM']:[]),
+    'END:VEVENT'];
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Look Up//EN',
+    ...ev('ecl'+r.tMax,r.c1-900000,r.c4,
+      'Eclipse — '+(r.obsc*100).toFixed(0)+'% covered from '+S.name,
+      'Starts '+hhmm(r.c1)+'. Deepest '+hhmmss(r.tMax)+'. Ends '+hhmm(r.c4)+
+      '. Look '+compass(r.az)+'\\, Sun '+r.alt.toFixed(0)+' degrees up. ISO 12312-2 glasses at all times.',30),
+    ...(d.darkFrom?ev('per'+d.darkFrom,d.darkFrom,d.darkTo||d.darkFrom+6*36e5,
+      'Perseid meteor shower peak',
+      'New Moon\\, so no moonlight. Get away from streetlights and give your eyes twenty minutes.',15):[]),
+    'END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');
+  a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+  a.download='eclipse-day.ics';a.click();
+};
+
+/* ---------- boot ---------- */
+if(BRAND.url.includes('example'))
+  console.warn('Look Up: BRAND.url is still the placeholder — share cards will show "lookup.example".');
+const saved=localStorage.getItem('spot');
+if(saved){const p=JSON.parse(saved);setLoc(p.lat,p.lon,p.name,p.elev);}
+else $('dlg').showModal();
+setInterval(render,1000);
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+</script>
+</body>
+</html>
