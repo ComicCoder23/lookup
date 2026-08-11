@@ -214,7 +214,8 @@ dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--l
   <h2>Before you look</h2>
   <div class="safety">
     <strong>Never look at the Sun without ISO 12312-2 eclipse glasses.</strong>
-    <p>Not sunglasses. Not a phone screen. Not smoked glass, welding glass under shade 14, or an exposed negative. A deep partial eclipse is still full-strength sunlight, and retinal damage is painless and permanent.</p>
+    <p>ISO 12312-2 is the international safety standard for solar viewers — real eclipse glasses have that exact code printed on the frame. No code printed on them, don't use them.</p>
+    <p>Not sunglasses. Not a phone screen. Not smoked glass, welding glass under shade 14, or an exposed negative. A deep partial eclipse is still full-strength sunlight, and retinal damage is painless and permanent — your eye has no pain nerves inside, so you'd feel nothing while it happened.</p>
     <p>Check your glasses for scratches or pinholes against a bright lamp first. If light gets through anywhere, bin them.</p>
     <p><b>No glasses?</b> A pinhole projector works perfectly, and so does standing under a leafy tree. You lose nothing — the crescents on the ground are the best part anyway.</p>
   </div>
@@ -231,7 +232,7 @@ dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--l
   <h2>The next one</h2>
   <div class="card">
     <div class="head">2 August 2027 — six minutes of totality</div>
-    <p>Southern Spain, North Africa and Egypt. One of the longest totalities of the century, and a completely different thing to a partial — the corona, the drop into night, the temperature crash. Worth planning a year out.</p>
+    <p>Southern Spain, North Africa and Egypt. One of the longest totalities of the century — totality meaning the Moon covers the whole Sun, not most of it. A completely different thing to a partial: you see the corona (the Sun's wispy outer atmosphere, a white halo that's invisible at any other time), day drops into night, and the temperature crashes. Worth planning a year out.</p>
     <div class="field">
       <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
       <button class="btn hot" id="subBtn" style="width:auto;padding:13px 18px">Send it</button>
@@ -239,6 +240,18 @@ dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--l
     <label class="consent"><input type="checkbox" id="consent">
       <span>Email me once when the 2027 planner is ready, and nothing else. Unsubscribe any time. I don't sell or share anything.</span></label>
     <p class="ok" id="subMsg" style="margin-top:10px"></p>
+  </div>
+
+  <h2>The words, in plain English</h2>
+  <div class="card">
+    <p><b style="color:var(--bone)">Partial eclipse</b> — the Moon covers part of the Sun. That's what the UK gets: the Sun becomes a thin crescent, but never fully disappears.</p>
+    <p><b style="color:var(--bone)">First contact</b> — the exact moment the Moon's edge first touches the Sun. The "first bite".</p>
+    <p><b style="color:var(--bone)">Deepest point / maximum</b> — the moment the most Sun is hidden. Everything on this page counts down to it.</p>
+    <p><b style="color:var(--bone)">Totality</b> — when the Moon covers the whole Sun. Not here this time — you'd need to be in Spain. Day briefly turns to night.</p>
+    <p><b style="color:var(--bone)">"Sun 14° up"</b> — how high it sits in the sky. Handy trick: your fist at arm's length covers about 10°, so 14° is barely a fist and a half above the rooftops. That's why open ground with a clear view matters more than a cloudless sky overhead.</p>
+    <p><b style="color:var(--bone)">"Look W · 275°"</b> — which way to face. W is west — roughly where the Sun sets. The number is the exact compass bearing if you open your phone's compass app.</p>
+    <p><b style="color:var(--bone)">New Moon</b> — when the Moon sits between us and the Sun with its unlit side facing us. Fun fact: an eclipse <i>is</i> a New Moon, just one that lines up perfectly.</p>
+    <p><b style="color:var(--bone)">The Perseids</b> — a meteor shower: streaks of light ("shooting stars") from comet dust burning up in our atmosphere. The <b>radiant</b> is the point they all seem to stream out from — the higher it climbs, the more you see, which is why the best hours are before dawn.</p>
   </div>
 
   <h2>Kit and support</h2>
@@ -254,9 +267,12 @@ dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--l
   </div>
 
   <footer>
-    Times are calculated from your own coordinates using Meeus lunar and solar theory with a
-    topocentric correction, not looked up from a table of cities. Verified against published
-    timings for sixteen cities to within seven seconds. Cloud data from Open-Meteo.
+    Your times are calculated on your phone from your exact coordinates using Meeus lunar and
+    solar theory — the standard mathematics astronomers use to predict where the Sun and Moon
+    will be — with a topocentric correction, which simply means adjusted for your spot on the
+    Earth's surface instead of the centre of the planet. That's why your street gets its own
+    second, not a number copied from the nearest big city. Verified against published timings
+    for sixteen cities to within seven seconds. Cloud data from Open-Meteo.
     Your location is worked out on your phone and never sent anywhere.<br><br>
     <span id="coordOut"></span>
   </footer>
