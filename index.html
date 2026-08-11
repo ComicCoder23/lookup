@@ -159,7 +159,10 @@ dialog input{width:100%;padding:12px;background:#08070E;border:1px solid var(--l
 <div class="wrap">
 
   <div class="top">
-    <div class="eyebrow" id="dateLab">Loading…</div>
+    <div>
+      <div class="eyebrow" id="dateLab">Loading…</div>
+      <div class="eyebrow" id="nowClock" style="margin-top:3px;color:var(--ember)"></div>
+    </div>
     <button class="place" id="placeBtn">Set location</button>
   </div>
 
@@ -641,6 +644,7 @@ function drawSky(c){
 function render(){
   const r=S.res; if(!r)return;
   const now=Date.now(), before=now<r.c1;
+  $('nowClock').textContent='Right now · '+new Date(now).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   if(S.live){
     S.t=before?r.tMax:Math.min(now,r.c4);
     $('scrub').value=Math.round((S.t-r.c1)/(r.c4-r.c1)*1000);
