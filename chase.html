@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Look Up — Plan B: find clearer sky</title>
+<meta name="description" content="Cloudy for the eclipse? Check the forecast in every direction around you, get pointed at the nearest clearer sky, or watch the live streams.">
+<meta name="theme-color" content="#08070E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08070E; --line:rgba(240,234,224,.12); --panel:rgba(240,234,224,.045);
+  --filter:#FF7A18; --ember:#FFC46B; --bone:#F0EAE0; --slate:#8E90AD;
+  --no:#FF5D6C; --ok:#7BD88F;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --disp:"Bodoni Moda",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--void);color:var(--bone);font-family:var(--sans);line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(120% 60% at 50% 0%,#1B1D38 0%,#08070E 62%);
+  background-attachment:fixed;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+.wrap{max-width:520px;margin:0 auto;padding:20px 18px 70px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--slate)}
+h1{font-family:var(--disp);font-size:34px;font-weight:400;line-height:1.15;margin:6px 0 8px}
+h2{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ember);margin:34px 0 12px}
+p.lede{color:var(--slate);font-size:14.5px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:16px;margin-bottom:12px}
+.head{font-weight:600;font-size:15.5px;margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--slate)}
+.btn{display:block;width:100%;padding:14px;text-align:center;border-radius:2px;cursor:pointer;
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--line);background:none;color:var(--bone)}
+.btn.hot{background:var(--filter);border-color:var(--filter);color:#180A00;font-weight:500}
+.btns2{display:flex;gap:8px;margin-top:10px}
+.btns2 .btn{padding:11px 4px;font-size:10.5px}
+.spot{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:14px 16px;margin-bottom:10px}
+.spot .row1{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.spot .nm{font-weight:600;font-size:16px}
+.spot .pc{font-family:var(--mono);font-size:20px;color:var(--ember)}
+.spot .meta{font-family:var(--mono);font-size:11px;color:var(--slate);margin-top:2px}
+.spot.best{border-color:rgba(255,122,24,.55)}
+.spot.home{border-style:dashed}
+.bar{height:5px;background:rgba(240,234,224,.08);border-radius:2px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--ember) 55%,var(--no));border-radius:2px}
+.warn{border:1px solid rgba(255,93,108,.4);background:rgba(255,93,108,.06);border-radius:2px;
+  padding:14px 16px;margin:14px 0;font-size:13.5px}
+.warn b{color:var(--no)}
+.note{font-family:var(--mono);font-size:11px;color:var(--slate);margin-top:10px;line-height:1.7}
+.status{font-family:var(--mono);font-size:12px;color:var(--slate);padding:10px 0}
+.stream{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:13px 2px;border-bottom:1px solid var(--line)}
+.stream:last-child{border-bottom:0}
+.stream a{color:var(--bone);font-weight:600;font-size:14.5px;text-decoration:none;
+  border-bottom:1px dashed rgba(255,196,107,.5)}
+.stream .t{font-family:var(--mono);font-size:12px;color:var(--ember);white-space:nowrap}
+.stream .d{font-size:12px;color:var(--slate);margin-top:2px}
+.field{display:flex;gap:8px;margin:12px 0}
+input{flex:1;background:none;border:1px solid var(--line);border-radius:2px;color:var(--bone);
+  padding:12px;font-family:var(--sans);font-size:15px;outline:none}
+input:focus{border-color:var(--ember)}
+.hits{list-style:none;margin-top:6px}
+.hits li{padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14.5px}
+.hits li span{color:var(--slate);font-size:12px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;color:var(--slate);line-height:1.8}
+a.back{color:var(--ember)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Look Up · 12 August 2026 · Plan B</div>
+  <h1>Clouded out? Chase the gap.</h1>
+  <p class="lede">The eclipse runs <b style="color:var(--bone)">18:08–20:01</b>. Deepest around
+  <b style="color:var(--bone)">19:05</b>. If your sky is grey, there may be a thinner patch within
+  half an hour of you — this page checks the forecast in every direction and points you at it.</p>
+
+  <div class="warn"><b>Decide by 17:00.</b> Be parked and out of the car by 18:00. If you can't,
+  stay where you are — 90% of the Sun disappearing behind thin cloud still beats sitting in
+  traffic and missing the whole thing. <b>Never</b> look anywhere near the Sun while driving,
+  and drivers: eyes on the road, the passengers do the looking.</p></div>
+
+  <h2>Clearer sky near you</h2>
+  <div id="finder">
+    <div class="field" id="searchRow" style="display:none">
+      <input id="q" placeholder="Town, city or postcode" autocomplete="off">
+    </div>
+    <ul class="hits" id="hits"></ul>
+    <div class="status" id="status">Working out where you are…</div>
+    <div id="results"></div>
+    <p class="note" id="finderNote" style="display:none">
+      Forecast sampled at 12, 25 and 40 km in twelve directions from your spot, for the hour of
+      deepest eclipse. Cloud models are ~10 km resolution — this improves your odds, it doesn't
+      promise blue sky. Reload for the latest model run. Directions open in your own maps app;
+      check the return journey too.</p>
+  </div>
+
+  <h2>Or watch it live — totality included</h2>
+  <div class="card">
+    <p style="margin-bottom:4px">Scotland gets 90%+ coverage. Spain gets <b style="color:var(--bone)">totality</b> —
+    the full corona. These streams are free; times are UK (BST).</p>
+    <div class="stream">
+      <div><a href="https://www.rmg.co.uk/whats-on/online/solar-eclipse-august-2026-uk-live-stream" target="_blank" rel="noopener">Royal Observatory Greenwich</a>
+        <div class="d">UK partial through their telescope · YouTube &amp; Facebook</div></div>
+      <div class="t">18:10–20:00</div>
+    </div>
+    <div class="stream">
+      <div><a href="https://www.timeanddate.com/live/" target="_blank" rel="noopener">timeanddate.com</a>
+        <div class="d">Totality from León &amp; Mallorca, Spain</div></div>
+      <div class="t">from ~17:00</div>
+    </div>
+    <div class="stream">
+      <div><a href="https://www.youtube.com/@NASA" target="_blank" rel="noopener">NASA</a>
+        <div class="d">Cameras along the whole eclipse path</div></div>
+      <div class="t">from ~18:15</div>
+    </div>
+    <div class="stream">
+      <div><a href="https://www.virtualtelescope.eu/webtv/" target="_blank" rel="noopener">Virtual Telescope Project</a>
+        <div class="d">Italy + the totality path in Spain</div></div>
+      <div class="t">from ~18:20</div>
+    </div>
+    <div class="stream">
+      <div><a href="https://www.youtube.com/@EuropeanSpaceAgency" target="_blank" rel="noopener">European Space Agency</a>
+        <div class="d">Javalambre Observatory, Spain</div></div>
+      <div class="t">from ~18:30</div>
+    </div>
+    <p class="note">Stream times were published in US Eastern time and converted; they may shift
+    on the day — open your chosen one a few minutes early.</p>
+  </div>
+
+  <a class="btn hot" href="index.html" style="margin-top:20px">← Back to your eclipse times</a>
+
+  <footer>
+    Cloud data from Open-Meteo, sampled around your location on your phone. Place names from
+    BigDataCloud. Your location is never sent to us — there is no us; this page has no server.
+    ISO 12312-2 eclipse glasses whenever any part of the Sun is visible.
+    <br><br><a class="back" href="index.html">Look Up — main page</a>
+  </footer>
+</div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const DEEP_UTC='2026-08-12T18:00';                 // hour of deepest eclipse for UK, UTC
+const COMPASS=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+const dirName=b=>COMPASS[Math.round(((b%360)+360)%360/22.5)%16];
+
+function ringPoints(lat,lon){
+  const pts=[{lat,lon,d:0,brg:null}];
+  for(const d of [12,25,40]){
+    for(let i=0;i<12;i++){
+      const b=i*30, br=b*Math.PI/180;
+      pts.push({
+        lat: lat + (d*Math.cos(br))/111.32,
+        lon: lon + (d*Math.sin(br))/(111.32*Math.cos(lat*Math.PI/180)),
+        d, brg:b
+      });
+    }
+  }
+  return pts;
+}
+
+async function cloudAt(pts){
+  const u='https://api.open-meteo.com/v1/forecast'
+    +'?latitude='+pts.map(p=>p.lat.toFixed(4)).join(',')
+    +'&longitude='+pts.map(p=>p.lon.toFixed(4)).join(',')
+    +'&hourly=cloud_cover&timezone=UTC&start_date=2026-08-12&end_date=2026-08-12';
+  const j=await(await fetch(u)).json();
+  const arr=Array.isArray(j)?j:[j];
+  return pts.map((p,i)=>{
+    const h=arr[i]&&arr[i].hourly, k=h?h.time.indexOf(DEEP_UTC):-1;
+    return {...p, cloud:(k>=0&&h.cloud_cover[k]!=null)?h.cloud_cover[k]:null};
+  });
+}
+
+async function placeName(p){
+  try{
+    const j=await(await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client'
+      +'?latitude='+p.lat.toFixed(4)+'&longitude='+p.lon.toFixed(4)+'&localityLanguage=en')).json();
+    return j.city||j.locality||j.principalSubdivision||null;
+  }catch(e){ return null; }
+}
+
+function spotHTML(p,name,home){
+  const gm='https://www.google.com/maps/dir/?api=1&destination='+p.lat.toFixed(5)+','+p.lon.toFixed(5);
+  const osm='https://www.openstreetmap.org/directions?to='+p.lat.toFixed(5)+'%2C'+p.lon.toFixed(5);
+  const label=name||('Open ground '+p.d+' km '+dirName(p.brg));
+  const meta=home?'where you are now':(p.d+' km '+dirName(p.brg)+' of you');
+  return '<div class="spot'+(home?' home':' best')+'">'
+    +'<div class="row1"><span class="nm">'+label+'</span><span class="pc">'+p.cloud+'%</span></div>'
+    +'<div class="meta">'+meta+' · cloud at 19:00</div>'
+    +'<div class="bar"><i style="width:'+p.cloud+'%"></i></div>'
+    +(home?'':'<div class="btns2">'
+      +'<a class="btn" href="'+gm+'" target="_blank" rel="noopener">By car</a>'
+      +'<a class="btn" href="'+gm+'&travelmode=transit" target="_blank" rel="noopener">Public transport</a>'
+      +'<a class="btn" href="'+osm+'" target="_blank" rel="noopener">OSM</a></div>')
+    +'</div>';
+}
+
+async function run(lat,lon,label){
+  $('status').textContent='Checking the sky in every direction around '+(label||'you')+'…';
+  $('results').innerHTML='';
+  let scored;
+  try{ scored=await cloudAt(ringPoints(lat,lon)); }
+  catch(e){ $('status').textContent='Could not reach the forecast service. Reload to try again.'; return; }
+  const home=scored[0];
+  const away=scored.slice(1).filter(p=>p.cloud!=null).sort((a,b)=>a.cloud-b.cloud||a.d-b.d);
+
+  // best per 90° quadrant so the three picks aren't all the same road
+  const picks=[]; const used=[];
+  for(const p of away){
+    if(picks.length>=3) break;
+    const q=Math.floor((((p.brg%360)+360)%360)/90);
+    if(used.includes(q)) continue;
+    if(home.cloud!=null && p.cloud>home.cloud-15) continue;   // must be meaningfully better
+    picks.push(p); used.push(q);
+  }
+
+  let html='';
+  if(home.cloud!=null) html+=spotHTML(home,label||'Your spot',true);
+  if(picks.length===0){
+    $('status').textContent = home.cloud==null ? 'No forecast available for this spot.' :
+      (home.cloud<=35 ? 'Your own sky looks decent — stay put and look up.' :
+       'Nowhere within 40 km looks meaningfully better. Stay put — the light change and the '+
+       'temperature drop happen through cloud, and the streams below have you covered.');
+  } else {
+    $('status').textContent='Best of 37 points checked within 40 km:';
+    for(const p of picks){ p.name=await placeName(p); html= html + spotHTML(p,p.name?p.name+' area':null,false); }
+  }
+  $('results').innerHTML=html;
+  $('finderNote').style.display='block';
+}
+
+/* location: reuse the main app's saved spot, else search, else GPS */
+const saved=localStorage.getItem('spot');
+if(saved){
+  try{ const s=JSON.parse(saved); run(s.lat,s.lon,s.name); }
+  catch(e){ $('searchRow').style.display='flex'; $('status').textContent='Search your town to start.'; }
+}else{
+  $('searchRow').style.display='flex';
+  $('status').textContent='Search your town, or open the main page first and set your spot.';
+}
+let tmr=null;
+$('q').oninput=e=>{
+  clearTimeout(tmr); const v=e.target.value.trim();
+  if(v.length<2){ $('hits').innerHTML=''; return; }
+  tmr=setTimeout(async()=>{
+    try{
+      const j=await(await fetch('https://geocoding-api.open-meteo.com/v1/search?name='
+        +encodeURIComponent(v)+'&count=5&language=en&format=json')).json();
+      $('hits').innerHTML=(j.results||[]).map((r,i)=>
+        '<li data-i="'+i+'">'+r.name+' <span>'+[r.admin1,r.country].filter(Boolean).join(' · ')+'</span></li>').join('');
+      (j.results||[]).forEach((r,i)=>{
+        $('hits').children[i].onclick=()=>{ $('hits').innerHTML=''; $('q').value=r.name; run(r.latitude,r.longitude,r.name); };
+      });
+    }catch(err){ $('status').textContent='Search is not responding — try again.'; }
+  },350);
+};
+</script>
+</body>
+</html>
