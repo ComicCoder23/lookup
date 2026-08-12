@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Look Up — no eclipse glasses? Two fixes, both free</title>
+<meta name="description" content="Where to get certified eclipse glasses free in Scotland tonight, and a pinhole viewer you can print or make in two minutes. Never look at the Sun without ISO 12312-2 protection.">
+<meta name="theme-color" content="#08070E">
+<meta property="og:title" content="No eclipse glasses? Two fixes, both free.">
+<meta property="og:description" content="Free certified glasses at events across Scotland tonight, plus a make-it-in-two-minutes safe viewer. Eclipse starts 18:08.">
+<meta property="og:image" content="https://comiccoder23.github.io/lookup/og.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#08070E; --line:rgba(240,234,224,.12); --panel:rgba(240,234,224,.045);
+  --filter:#FF7A18; --ember:#FFC46B; --bone:#F0EAE0; --slate:#8E90AD; --no:#FF5D6C; --ok:#7BD88F;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --disp:"Bodoni Moda",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--void);color:var(--bone);font-family:var(--sans);line-height:1.55;
+  background-image:radial-gradient(120% 60% at 50% 0%,#1B1D38 0%,#08070E 62%);background-attachment:fixed;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+.wrap{max-width:520px;margin:0 auto;padding:20px 18px 70px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--slate)}
+h1{font-family:var(--disp);font-size:33px;font-weight:400;line-height:1.15;margin:6px 0 8px}
+h2{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);margin:34px 0 12px}
+p.lede{color:var(--slate);font-size:14.5px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:16px;margin-bottom:12px}
+.card p{font-size:13.5px;color:var(--slate);margin-bottom:8px}
+.card b{color:var(--bone)}
+.head{font-weight:600;font-size:15.5px;margin-bottom:6px;color:var(--bone)}
+.ev{padding:12px 2px;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .n{font-weight:600;font-size:14.5px}
+.ev .d{font-size:12.5px;color:var(--slate);margin-top:2px}
+.ev .free{font-family:var(--mono);font-size:10.5px;color:var(--ok);letter-spacing:.1em}
+.warn{border:1px solid rgba(255,93,108,.4);background:rgba(255,93,108,.06);border-radius:2px;padding:14px 16px;margin:14px 0;font-size:13.5px}
+.warn b{color:var(--no)}
+.btn{display:block;width:100%;padding:14px;text-align:center;border-radius:2px;cursor:pointer;
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--line);background:none;color:var(--bone)}
+.btn.hot{background:var(--filter);border-color:var(--filter);color:#180A00;font-weight:500}
+.note{font-family:var(--mono);font-size:11px;color:var(--slate);margin-top:10px;line-height:1.7}
+ol{margin:8px 0 8px 20px;font-size:13.5px;color:var(--slate)}
+ol li{margin-bottom:6px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;color:var(--slate);line-height:1.8}
+a.back{color:var(--ember)}
+/* ---------- print sheet: only this prints ---------- */
+#printSheet{display:none}
+@media print{
+  body{background:#fff}
+  body>.wrap{display:none}
+  #printSheet{display:block;color:#000;font-family:Georgia,serif;padding:10mm}
+  #printSheet h1{font-size:26pt;color:#000;font-family:Georgia,serif}
+  #printSheet .box{border:2.5pt solid #000;height:70mm;margin:8mm 0;position:relative;padding:6mm}
+  #printSheet .dot{position:absolute;top:50%;left:50%;width:8mm;height:8mm;border:1.5pt dashed #000;
+    border-radius:50%;transform:translate(-50%,-50%)}
+  #printSheet .dot span{position:absolute;top:110%;left:50%;transform:translateX(-50%);
+    font-size:9pt;white-space:nowrap}
+  #printSheet p{font-size:11.5pt;margin:4pt 0}
+  #printSheet ol{font-size:11.5pt;margin-left:18pt}
+  #printSheet .foot{margin-top:8mm;font-size:9.5pt;border-top:1pt solid #000;padding-top:4mm}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Look Up · 12 August · eclipse 18:08–20:01</div>
+  <h1>No eclipse glasses?<br>Two fixes, both free.</h1>
+  <p class="lede">Half of Scotland is asking the same question today. Here's the honest answer:
+  it's too late for online orders — but there are free certified glasses at events tonight,
+  and a completely safe viewer you can make in two minutes.</p>
+
+  <div class="warn"><b>First, the hard rule.</b> Only glasses marked <b>ISO 12312-2</b> (printed
+  on the frame) are safe for looking at the Sun. Sunglasses, smoked glass, CDs, phone screens and
+  camera filters are <b>not</b> — a 91% eclipse is still full-strength sunlight, and eye damage is
+  painless and permanent. No code on the frame, don't use them.</div>
+
+  <h2>Fix 1 — free certified glasses tonight</h2>
+  <div class="card">
+    <p>Astronomy clubs and venues across Scotland are handing out certified glasses at tonight's
+    viewing events. Closest to Glasgow first:</p>
+    <div class="ev"><div class="n">Red Burn Farm, Blantyre</div>
+      <div class="d">From 6pm · <span class="free">CERTIFIED GLASSES FREE</span></div></div>
+    <div class="ev"><div class="n">Whitelee Windfarm Visitor Centre, Eaglesham</div>
+      <div class="d">Guided viewing walks to Blackwood Hill</div></div>
+    <div class="ev"><div class="n">Calton Hill &amp; Arthur's Seat, Edinburgh</div>
+      <div class="d">Astronomical Society of Edinburgh · telescopes too · <span class="free">FREE GLASSES</span></div></div>
+    <div class="ev"><div class="n">Mills Observatory &amp; Broughty Castle, Dundee</div>
+      <div class="d">Open till 8:30pm · certified glasses to buy</div></div>
+    <div class="ev"><div class="n">Glasgow — informal gatherings</div>
+      <div class="d">Necropolis, Queen's Park, Cathkin Braes — bring your own viewing method</div></div>
+    <p class="note">Listings via STV News — numbers are limited and events can change, so arrive
+    early and don't travel far on the promise of a free pair. In-person last resorts: telescope
+    shops and some opticians stock ISO 12312-2 viewers — phone before you go.</p>
+  </div>
+
+  <h2>Fix 2 — make a safe viewer in two minutes</h2>
+  <div class="card">
+    <div class="head">The pinhole projector</div>
+    <p>You never look at the Sun at all — you look at its <b>projection</b>, which is completely
+    safe, and during the deep eclipse the projected image becomes a thin crescent. Kids can make it
+    and kids love it.</p>
+    <ol>
+      <li>Take two pieces of card (cereal box works).</li>
+      <li>Pierce a small round hole in one with a pin.</li>
+      <li>Stand with your <b>back to the Sun</b>. Hold the pinhole card up over your shoulder.</li>
+      <li>Let the sunlight pass through the hole onto the second card — there's the Sun, as a
+      little disc of light. Tonight from 18:08 it becomes a bite, then a crescent.</li>
+    </ol>
+    <p><b>Even lazier:</b> a kitchen colander projects dozens of crescents at once. And any leafy
+    tree does it for free — the gaps between leaves are natural pinholes, and the pavement
+    underneath fills with crescents. That's the photo everyone remembers.</p>
+    <button class="btn hot" onclick="window.print()" style="margin-top:8px">🖨 Print a ready-made viewer sheet</button>
+    <p class="note">The print button gives you an A4 template — pierce the marked dot, follow the
+    printed steps. Make one per kid, they get very possessive.</p>
+  </div>
+
+  <a class="btn" href="index.html" style="margin-top:20px">Your exact eclipse times for tonight →</a>
+  <a class="btn" href="chase.html" style="margin-top:8px">Cloudy? Find clearer sky near you →</a>
+
+  <footer>
+    Free, no ads, no tracking. Event listings via STV News, 12 Aug 2026 — check before travelling.
+    <br><br><a class="back" href="index.html">Look Up — main page</a> ·
+    <a class="back" href="https://ko-fi.com/comiccoder23" target="_blank" rel="noopener">☕ the tip jar</a>
+  </footer>
+</div>
+
+<!-- ======== A4 PRINT SHEET (only visible when printing) ======== -->
+<div id="printSheet">
+  <h1>🌒 Look Up — Pinhole Eclipse Viewer</h1>
+  <p><b>Eclipse tonight: 18:08 – 20:01. Deepest around 19:05.</b> This sheet lets you watch it
+  with your back to the Sun — completely safe, no glasses needed.</p>
+  <div class="box"><div class="dot"><span>pierce this circle once with a pin</span></div></div>
+  <p><b>How to use it:</b></p>
+  <ol>
+    <li>Pierce the marked circle once with a pin or sharp pencil. Small and round beats big and ragged.</li>
+    <li>Cut the sheet in half — the half with the hole is your projector, the blank half is your screen.</li>
+    <li>Stand with your <b>BACK to the Sun</b>. Never look at the Sun directly.</li>
+    <li>Hold the pinhole half up over your shoulder, and catch the spot of light on the blank half.</li>
+    <li>That spot IS the Sun. From 18:08 watch a bite appear; by 19:05 it's a thin crescent.</li>
+  </ol>
+  <p>Move the sheets further apart for a bigger (dimmer) image. A leafy tree does the same trick —
+  look at the ground underneath it during the eclipse.</p>
+  <div class="foot">Your street's exact times, a voice guide, and a clear-sky finder:
+  <b>comiccoder23.github.io/lookup</b> — free, no app store. Safe viewing: only ISO 12312-2
+  glasses are safe for direct viewing; sunglasses never are.</div>
+</div>
+</body>
+</html>
