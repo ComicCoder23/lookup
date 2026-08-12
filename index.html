@@ -492,14 +492,24 @@ function phenomena(r,lat,lon,elev){
    VOICE GUIDE — the incumbent's paid feature, free in the browser
    ============================================================ */
 const Voice={
-  on:false, said:new Set(), sched:[],
+  on:false, said:new Set(), sched:[], voice:null,
+  pick(){ // choose the best British voice this device offers
+    try{
+      const vs=speechSynthesis.getVoices().filter(v=>/en[-_]GB/i.test(v.lang));
+      this.voice =
+        vs.find(v=>/natural|neural/i.test(v.name)) ||             // Edge natural voices (Sonia, Ryan)
+        vs.find(v=>/google uk english/i.test(v.name)) ||          // Android Chrome
+        vs.find(v=>/daniel|kate|serena|stephanie/i.test(v.name))||// iOS / macOS
+        vs[0] || null;
+    }catch(e){ this.voice=null; }
+  },
+  dress(u){ u.rate=0.95; u.pitch=1; u.lang='en-GB'; if(this.voice)u.voice=this.voice; return u; },
   unlock(){ // iOS requires a gesture-triggered utterance before any later speech works
-    const u=new SpeechSynthesisUtterance('Voice guide on. I will talk you through it.');
-    u.rate=0.95; speechSynthesis.speak(u);
+    this.pick();
+    speechSynthesis.speak(this.dress(new SpeechSynthesisUtterance('Voice guide on. I will talk you through it.')));
   },
   say(text){ if(!this.on)return;
-    const u=new SpeechSynthesisUtterance(text); u.rate=0.95; u.pitch=1;
-    speechSynthesis.speak(u); },
+    speechSynthesis.speak(this.dress(new SpeechSynthesisUtterance(text))); },
   build(r,ph){
     this.sched=[];
     for(const p of ph) this.sched.push({t:p.t,key:p.short,text:p.say});
@@ -880,6 +890,8 @@ $('calBtn').onclick=()=>{
   a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
   a.download='eclipse-day.ics';a.click();
 };
+
+try{Voice.pick();speechSynthesis.onvoiceschanged=()=>Voice.pick();}catch(e){}
 
 /* ---------- boot ---------- */
 if(BRAND.url.includes('example'))
