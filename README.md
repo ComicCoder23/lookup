@@ -10,6 +10,9 @@ Eclipse companion for the partial solar eclipse of **12 August 2026** (18:08–2
 
 - **Exact times from your own coordinates** — first contact, deepest point, last contact, computed on your phone with Meeus lunar and solar theory plus a topocentric correction (adjusted for your spot on the Earth's surface, not the centre of the planet). Verified against published timings for sixteen cities to within seven seconds.
 - **A live sky view** — the crescent drawn from the real geometry, with a scrubber to preview any moment of the eclipse.
+- **Town or postcode** — UK postcodes work (`G66 1DN`, or just `G66`) via the open [postcodes.io](https://postcodes.io) API; town names worldwide via Open-Meteo geocoding. Press Enter to take the top match.
+- **No glasses? Sorted** — [glasses.html](https://comiccoder23.github.io/lookup/glasses.html) lists tonight's events giving away certified ISO 12312-2 glasses, and includes a printable pinhole viewer that needs no glasses at all.
+- **A live clock in the header** — "Right now" next to the eclipse times, so you always know how long you've got.
 - **A voice guide** — put your phone in your pocket and it talks you through the whole event: when to look, what to notice, when the good bits are.
 - **Cloudy? Plan B built in** — [chase.html](https://comiccoder23.github.io/lookup/chase.html) samples the cloud forecast at 37 points within 40 km of you and points you at the clearest sky, with directions by car or public transport, plus every free live stream including totality from Spain.
 - **Share cards** — a 1080×1350 card of your town's eclipse, drawn from the real geometry, ready to post.
