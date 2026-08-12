@@ -785,21 +785,45 @@ $('gpsBtn').onclick=()=>{
     {enableHighAccuracy:false,timeout:9000});
 };
 let qt;
+const PC_FULL=/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/, PC_PART=/^[A-Za-z]{1,2}\d[A-Za-z\d]?$/;
+async function findPlaces(v){
+  if(PC_FULL.test(v)||PC_PART.test(v)){
+    const path=PC_FULL.test(v)?'postcodes/':'outcodes/';
+    const j=await(await fetch('https://api.postcodes.io/'+path+encodeURIComponent(v.replace(/\s+/g,'')))).json();
+    if(j.status===200&&j.result){
+      const r=j.result, one=x=>Array.isArray(x)?x[0]:x;
+      let el=0;
+      try{const ej=await(await fetch('https://api.open-meteo.com/v1/elevation?latitude='+r.latitude+'&longitude='+r.longitude)).json();
+        el=(ej.elevation&&ej.elevation[0])||0;}catch(_){}
+      return [{name:(r.postcode||r.outcode),admin1:one(r.admin_district),country:one(r.country)||'UK',
+        latitude:r.latitude,longitude:r.longitude,elevation:el}];
+    }
+    return [];
+  }
+  const j=await(await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(v)+'&count=6&language=en&format=json')).json();
+  return j.results||[];
+}
 $('q').oninput=e=>{
   clearTimeout(qt); const v=e.target.value.trim();
   if(v.length<2){$('hits').innerHTML='';return;}
   qt=setTimeout(async()=>{
     try{
-      const j=await(await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=6&language=en&format=json`)).json();
-      $('hits').innerHTML=(j.results||[]).map(r=>
+      const res=await findPlaces(v);
+      $('hits').innerHTML=res.map(r=>
         `<li data-lat="${r.latitude}" data-lon="${r.longitude}" data-el="${r.elevation||0}">${r.name}
          <span>${[r.admin1,r.country].filter(Boolean).join(' · ')}</span></li>`).join('')
-        ||'<li>Nothing found</li>';
+        ||'<li>Nothing found — try a town name or a postcode like G66 1DN</li>';
       $('hits').querySelectorAll('li[data-lat]').forEach(li=>li.onclick=()=>{
         setLoc(li.dataset.lat,li.dataset.lon,li.firstChild.textContent.trim(),+li.dataset.el);$('dlg').close();});
     }catch(e){$('dlgErr').textContent='Search unavailable — try your GPS.';}
   },260);
 };
+$('q').addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return; e.preventDefault();
+  const li=$('hits').querySelector('li[data-lat]');
+  if(li) li.click();
+  else $('dlgErr').textContent='Still looking — give it a second, then tap a result.';
+});
 
 /* ---------- controls ---------- */
 $('scrub').oninput=e=>{

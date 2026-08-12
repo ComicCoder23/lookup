@@ -253,21 +253,42 @@ if(saved){
   $('status').textContent='Search your town, or open the main page first and set your spot.';
 }
 let tmr=null;
+const PC_FULL=/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/, PC_PART=/^[A-Za-z]{1,2}\d[A-Za-z\d]?$/;
+async function findPlaces(v){
+  if(PC_FULL.test(v)||PC_PART.test(v)){
+    const path=PC_FULL.test(v)?'postcodes/':'outcodes/';
+    const j=await(await fetch('https://api.postcodes.io/'+path+encodeURIComponent(v.replace(/\s+/g,'')))).json();
+    if(j.status===200&&j.result){
+      const r=j.result, one=x=>Array.isArray(x)?x[0]:x;
+      return [{name:(r.postcode||r.outcode),admin1:one(r.admin_district),country:one(r.country)||'UK',
+        latitude:r.latitude,longitude:r.longitude}];
+    }
+    return [];
+  }
+  const j=await(await fetch('https://geocoding-api.open-meteo.com/v1/search?name='
+    +encodeURIComponent(v)+'&count=5&language=en&format=json')).json();
+  return j.results||[];
+}
 $('q').oninput=e=>{
   clearTimeout(tmr); const v=e.target.value.trim();
   if(v.length<2){ $('hits').innerHTML=''; return; }
   tmr=setTimeout(async()=>{
     try{
-      const j=await(await fetch('https://geocoding-api.open-meteo.com/v1/search?name='
-        +encodeURIComponent(v)+'&count=5&language=en&format=json')).json();
-      $('hits').innerHTML=(j.results||[]).map((r,i)=>
-        '<li data-i="'+i+'">'+r.name+' <span>'+[r.admin1,r.country].filter(Boolean).join(' · ')+'</span></li>').join('');
-      (j.results||[]).forEach((r,i)=>{
+      const res=await findPlaces(v);
+      $('hits').innerHTML=res.map((r,i)=>
+        '<li data-i="'+i+'">'+r.name+' <span>'+[r.admin1,r.country].filter(Boolean).join(' · ')+'</span></li>').join('')
+        ||'<li>Nothing found — try a town or a postcode like G66 1DN</li>';
+      res.forEach((r,i)=>{
         $('hits').children[i].onclick=()=>{ $('hits').innerHTML=''; $('q').value=r.name; run(r.latitude,r.longitude,r.name); };
       });
     }catch(err){ $('status').textContent='Search is not responding — try again.'; }
   },350);
 };
+$('q').addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return; e.preventDefault();
+  const li=$('hits').querySelector('li[data-i]');
+  if(li) li.click();
+});
 </script>
 </body>
 </html>
