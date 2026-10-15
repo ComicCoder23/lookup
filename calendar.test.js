@@ -19,7 +19,7 @@ class Element {
   addEventListener(type, fn) { this.listeners[type] = fn; }
 }
 
-function load({stored = null, fetchResult = null} = {}) {
+function load({stored = null, legacy = null, fetchResult = null} = {}) {
   const elements = new Map();
   const get = id => {
     if (!elements.has(id)) elements.set(id, new Element());
@@ -27,6 +27,7 @@ function load({stored = null, fetchResult = null} = {}) {
   };
   const storage = new Map();
   if (stored) storage.set('sky-calendar-place', stored);
+  if (legacy) storage.set('spot', legacy);
   const RealDate = Date;
   class FixedDate extends RealDate {
     constructor(...args) { super(...(args.length ? args : ['2026-10-15T12:00:00Z'])); }
@@ -68,4 +69,31 @@ test('town search uses postcodes.io and saves the selected spot', async () => {
 test('bad saved location falls back to Kirkintilloch', () => {
   const {get} = load({stored:'{bad json'});
   assert.equal(get('place').textContent, 'Kirkintilloch · G66');
+});
+
+test('upgrade retains a valid eclipse-page spot without changing legacy data', () => {
+  const legacy = JSON.stringify({lat:55.8651, lon:-4.2576, name:'Glasgow', elev:20});
+  const {get, storage} = load({legacy});
+  assert.equal(get('place').textContent, 'Glasgow');
+  assert.equal(storage.get('spot'), legacy);
+});
+
+test('a calendar selection takes precedence over the old eclipse spot', () => {
+  const {get} = load({
+    stored:JSON.stringify({lat:55.95, lon:-3.19, name:'Edinburgh'}),
+    legacy:JSON.stringify({lat:55.86, lon:-4.25, name:'Glasgow'})
+  });
+  assert.equal(get('place').textContent, 'Edinburgh');
+});
+
+test('malformed calendar storage does not hide a valid legacy spot', () => {
+  const {get} = load({stored:'{bad json',
+    legacy:JSON.stringify({lat:55.86, lon:-4.25, name:'Glasgow'})});
+  assert.equal(get('place').textContent, 'Glasgow');
+});
+
+test('invalid or malformed legacy spots still use the offline default', () => {
+  for (const legacy of ['{bad json', JSON.stringify({lat:999, lon:0, name:'Invalid'})]) {
+    assert.equal(load({legacy}).get('place').textContent, 'Kirkintilloch · G66');
+  }
 });
