@@ -1,5 +1,5 @@
 /* Offline shell. Rural viewing spots have no signal. */
-const V='lookup-v6';
+const V='lookup-v7';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['./','./index.html','./eclipse-2026.html','./calendar.js','./vendor/astronomy.browser.min.js','./chase.html','./glasses.html','./manifest.json','./icon-192.png','./icon-512.png'])));self.skipWaiting();});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))));self.clients.claim();});
 self.addEventListener('fetch',e=>{

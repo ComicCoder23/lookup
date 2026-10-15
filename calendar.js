@@ -145,10 +145,14 @@
       typeof place.name === 'string' && place.name.length > 0 && place.name.length < 140;
   }
   function savedPlace() {
-    try {
-      const place = JSON.parse(localStorage.getItem('sky-calendar-place'));
-      return validPlace(place) ? place : fallback;
-    } catch (_) { return fallback; }
+    // The eclipse page used 'spot'; retain it when upgrading to the calendar.
+    for (const key of ['sky-calendar-place', 'spot']) {
+      try {
+        const place = JSON.parse(localStorage.getItem(key));
+        if (validPlace(place)) return place;
+      } catch (_) { /* Try the older key, then the offline default. */ }
+    }
+    return fallback;
   }
   function setPlace(place) {
     if (!validPlace(place)) return;
