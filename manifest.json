@@ -1,7 +1,7 @@
 {
-  "name": "Look Up — your eclipse, your postcode",
+  "name": "Look Up — sky calendar",
   "short_name": "Look Up",
-  "description": "Exact eclipse times for wherever you're standing, a voice guide, and the cloud forecast for your spot.",
+  "description": "Moon phases, meteor showers, planets tonight and the next eclipse for your UK location.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
